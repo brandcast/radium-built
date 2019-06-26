@@ -1,5 +1,3 @@
-
-
 // Copied from https://github.com/facebook/react/blob/
 // b87aabdfe1b7461e7331abb3601d9e6bb27544bc/
 // packages/react-dom/src/shared/CSSProperty.js
@@ -38,7 +36,6 @@ var isUnitlessNumber = {
   widows: true,
   zIndex: true,
   zoom: true,
-
   // SVG-related properties
   fillOpacity: true,
   floodOpacity: true,
@@ -49,7 +46,6 @@ var isUnitlessNumber = {
   strokeOpacity: true,
   strokeWidth: true
 };
-
 export default function appendPxIfNeeded(propertyName, value) {
   var needsPxSuffix = !isUnitlessNumber[propertyName] && typeof value === 'number' && value !== 0;
   return needsPxSuffix ? value + 'px' : value;

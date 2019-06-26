@@ -1,201 +1,291 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-import { Component } from 'react';
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
+import React, { useState, useContext, useRef, useEffect, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-
-import StyleKeeper from './style-keeper';
+import hoistStatics from 'hoist-non-react-statics';
 import resolveStyles from './resolve-styles';
 import getRadiumStyleState from './get-radium-style-state';
-
+import { RadiumConfigContext, withRadiumContexts } from './context';
+import { StyleKeeperContext } from './context';
 var KEYS_TO_IGNORE_WHEN_COPYING_PROPERTIES = ['arguments', 'callee', 'caller', 'length', 'name', 'prototype', 'type'];
-
-var RADIUM_PROTO = void 0;
-var RADIUM_METHODS = void 0;
+var RADIUM_PROTO;
+var RADIUM_METHODS;
 
 function copyProperties(source, target) {
   Object.getOwnPropertyNames(source).forEach(function (key) {
     if (KEYS_TO_IGNORE_WHEN_COPYING_PROPERTIES.indexOf(key) < 0 && !target.hasOwnProperty(key)) {
       var descriptor = Object.getOwnPropertyDescriptor(source, key);
-      Object.defineProperty(target, key, descriptor);
+      descriptor && Object.defineProperty(target, key, descriptor);
     }
   });
-}
-
-// Handle scenarios of:
+} // Handle scenarios of:
 // - Inherit from `React.Component` in any fashion
 //   See: https://github.com/FormidableLabs/radium/issues/738
 // - There's an explicit `render` field defined
+
+
 function isStateless(component) {
   var proto = component.prototype || {};
-
   return !component.isReactComponent && !proto.isReactComponent && !component.render && !proto.render;
-}
-
-// Check if value is a real ES class in Native / Node code.
+} // Check if value is a real ES class in Native / Node code.
 // See: https://stackoverflow.com/a/30760236
+
+
 function isNativeClass(component) {
   return typeof component === 'function' && /^\s*class\s+/.test(component.toString());
-}
-
-// Handle es7 arrow functions on React class method names by detecting
+} // Handle es7 arrow functions on React class method names by detecting
 // and transfering the instance method to original class prototype.
 // (Using a copy of the class).
 // See: https://github.com/FormidableLabs/radium/issues/738
+
+
 function copyArrowFuncs(enhancedSelf, ComposedComponent) {
   RADIUM_METHODS.forEach(function (name) {
     var thisDesc = Object.getOwnPropertyDescriptor(enhancedSelf, name);
-    var thisMethod = (thisDesc || {}).value;
-    // Only care if have instance method.
+    var thisMethod = (thisDesc || {}).value; // Only care if have instance method.
+
     if (!thisMethod) {
       return;
     }
+
     var radiumDesc = Object.getOwnPropertyDescriptor(RADIUM_PROTO, name);
     var radiumProtoMethod = (radiumDesc || {}).value;
-    var superProtoMethod = ComposedComponent.prototype[name];
-    // Allow transfer when:
+    var superProtoMethod = ComposedComponent.prototype[name]; // Allow transfer when:
     // 1. have an instance method
     // 2. the super class prototype doesn't have any method
     // 3. it is not already the radium prototype's
+
     if (!superProtoMethod && thisMethod !== radiumProtoMethod) {
       // Transfer dynamic render component to Component prototype (copy).
-      Object.defineProperty(ComposedComponent.prototype, name, thisDesc);
-      // Remove instance property, leaving us to have a contrived
+      thisDesc && Object.defineProperty(ComposedComponent.prototype, name, thisDesc); // Remove instance property, leaving us to have a contrived
       // inheritance chain of (1) radium, (2) superclass.
+
       delete enhancedSelf[name];
     }
   });
 }
 
-function createEnhancedComponent(origComponent, ComposedComponent, config) {
-  var _class, _temp;
+function cleanUpEnhancer(enhancer) {
+  var _radiumMouseUpListener = enhancer._radiumMouseUpListener,
+      _radiumMediaQueryListenersByQuery = enhancer._radiumMediaQueryListenersByQuery;
+  enhancer._radiumIsMounted = false;
 
-  var RadiumEnhancer = (_temp = _class = function (_ComposedComponent) {
+  if (_radiumMouseUpListener) {
+    _radiumMouseUpListener.remove();
+  }
+
+  if (_radiumMediaQueryListenersByQuery) {
+    Object.keys(_radiumMediaQueryListenersByQuery).forEach(function (query) {
+      _radiumMediaQueryListenersByQuery[query].remove();
+    }, enhancer);
+  }
+}
+
+function createEnhancedFunctionComponent(origComponent, config) {
+  var RadiumEnhancer = React.forwardRef(function (props, ref) {
+    var radiumConfig = props.radiumConfig,
+        otherProps = _objectWithoutProperties(props, ["radiumConfig"]);
+
+    var radiumConfigContext = useContext(RadiumConfigContext);
+    var styleKeeperContext = useContext(StyleKeeperContext);
+
+    var _useState = useState({}),
+        _useState2 = _slicedToArray(_useState, 2),
+        state = _useState2[0],
+        setState = _useState2[1];
+
+    var enhancerApi = useRef({
+      state: state,
+      setState: setState,
+      _radiumMediaQueryListenersByQuery: undefined,
+      _radiumMouseUpListener: undefined,
+      _radiumIsMounted: true,
+      _lastRadiumState: undefined,
+      _extraRadiumStateKeys: undefined,
+      _radiumStyleKeeper: styleKeeperContext
+    }).current; // result of useRef is never recreated and is designed to be mutable
+    // we need to make sure the latest state is attached to it
+
+    enhancerApi.state = state;
+    useEffect(function () {
+      return function () {
+        cleanUpEnhancer(enhancerApi);
+      };
+    }, [enhancerApi]);
+    var renderedElement = origComponent(otherProps, ref);
+    var currentConfig = radiumConfig || radiumConfigContext || config;
+
+    if (config && currentConfig !== config) {
+      currentConfig = _objectSpread({}, config, currentConfig);
+    }
+
+    var _resolveStyles = resolveStyles(enhancerApi, renderedElement, currentConfig),
+        extraStateKeyMap = _resolveStyles.extraStateKeyMap,
+        element = _resolveStyles.element;
+
+    enhancerApi._extraRadiumStateKeys = Object.keys(extraStateKeyMap);
+
+    if (radiumConfig) {
+      return React.createElement(RadiumConfigContext.Provider, {
+        value: radiumConfig
+      }, element);
+    }
+
+    return element;
+  });
+  RadiumEnhancer._isRadiumEnhanced = true;
+  RadiumEnhancer.defaultProps = origComponent.defaultProps;
+  return hoistStatics(RadiumEnhancer, origComponent);
+}
+
+function createEnhancedClassComponent(origComponent, ComposedComponent, config) {
+  var RadiumEnhancer =
+  /*#__PURE__*/
+  function (_ComposedComponent) {
     _inherits(RadiumEnhancer, _ComposedComponent);
 
+    // need to attempt to assign to this.state in case
+    // super component is setting state on construction,
+    // otherwise class properties reinitialize to undefined
+    // need to assign the following methods to this.xxx as
+    // tests attempt to set this on the original component
     function RadiumEnhancer() {
+      var _this;
+
       _classCallCheck(this, RadiumEnhancer);
 
-      var _this = _possibleConstructorReturn(this, (RadiumEnhancer.__proto__ || Object.getPrototypeOf(RadiumEnhancer)).apply(this, arguments));
-
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(RadiumEnhancer).apply(this, arguments));
       _this.state = _this.state || {};
-      _this.state._radiumStyleState = {};
+      _this._radiumStyleKeeper = _this.props.styleKeeperContext;
+      _this._radiumMediaQueryListenersByQuery = _this._radiumMediaQueryListenersByQuery;
+      _this._radiumMouseUpListener = _this._radiumMouseUpListener;
       _this._radiumIsMounted = true;
+      _this._lastRadiumState = void 0;
+      _this._extraRadiumStateKeys = void 0;
+      _this.state._radiumStyleState = {};
 
-      var self = _this;
+      var self = _assertThisInitialized(_this); // Handle es7 arrow functions on React class method
 
-      // Handle es7 arrow functions on React class method
+
       copyArrowFuncs(self, ComposedComponent);
       return _this;
     }
+    /* eslint-disable react/no-did-update-set-state, no-unused-vars */
+
 
     _createClass(RadiumEnhancer, [{
-      key: 'componentWillUnmount',
-      value: function componentWillUnmount() {
-        if (_get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'componentWillUnmount', this)) {
-          _get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'componentWillUnmount', this).call(this);
-        }
-
-        this._radiumIsMounted = false;
-
-        if (this._radiumMouseUpListener) {
-          this._radiumMouseUpListener.remove();
-        }
-
-        if (this._radiumMediaQueryListenersByQuery) {
-          Object.keys(this._radiumMediaQueryListenersByQuery).forEach(function (query) {
-            this._radiumMediaQueryListenersByQuery[query].remove();
-          }, this);
-        }
-      }
-    }, {
-      key: 'getChildContext',
-      value: function getChildContext() {
-        var superChildContext = _get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'getChildContext', this) ? _get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'getChildContext', this).call(this) : {};
-
-        if (!this.props.radiumConfig) {
-          return superChildContext;
-        }
-
-        var newContext = _extends({}, superChildContext);
-
-        if (this.props.radiumConfig) {
-          newContext._radiumConfig = this.props.radiumConfig;
-        }
-
-        return newContext;
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        var renderedElement = _get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'render', this).call(this);
-        var currentConfig = this.props.radiumConfig || this.context._radiumConfig || config;
-
-        if (config && currentConfig !== config) {
-          currentConfig = _extends({}, config, currentConfig);
-        }
-
-        // do the style and interaction work
-
-        var _resolveStyles = resolveStyles(this, renderedElement, currentConfig),
-            extraStateKeyMap = _resolveStyles.extraStateKeyMap,
-            element = _resolveStyles.element;
-
-        this._extraRadiumStateKeys = Object.keys(extraStateKeyMap);
-
-        return element;
-      }
-
-      /* eslint-disable react/no-did-update-set-state, no-unused-vars */
-
-    }, {
-      key: 'componentDidUpdate',
+      key: "componentDidUpdate",
       value: function componentDidUpdate(prevProps, prevState, snapshot) {
-        if (_get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'componentDidUpdate', this)) {
-          _get(RadiumEnhancer.prototype.__proto__ || Object.getPrototypeOf(RadiumEnhancer.prototype), 'componentDidUpdate', this).call(this, prevProps, prevState, snapshot);
+        if (_get(_getPrototypeOf(RadiumEnhancer.prototype), "componentDidUpdate", this)) {
+          _get(_getPrototypeOf(RadiumEnhancer.prototype), "componentDidUpdate", this).call(this, prevProps, prevState, snapshot);
         }
 
         if (this._extraRadiumStateKeys && this._extraRadiumStateKeys.length > 0) {
           var trimmedRadiumState = this._extraRadiumStateKeys.reduce(function (state, key) {
             var extraStateKey = state[key],
-                remainingState = _objectWithoutProperties(state, [key]);
+                remainingState = _objectWithoutProperties(state, [key].map(_toPropertyKey));
 
             return remainingState;
           }, getRadiumStyleState(this));
 
           this._lastRadiumState = trimmedRadiumState;
-          this.setState({ _radiumStyleState: trimmedRadiumState });
+          this.setState({
+            _radiumStyleState: trimmedRadiumState
+          });
         }
       }
       /* eslint-enable react/no-did-update-set-state, no-unused-vars */
 
+    }, {
+      key: "componentWillUnmount",
+      value: function componentWillUnmount() {
+        if (_get(_getPrototypeOf(RadiumEnhancer.prototype), "componentWillUnmount", this)) {
+          _get(_getPrototypeOf(RadiumEnhancer.prototype), "componentWillUnmount", this).call(this);
+        }
+
+        cleanUpEnhancer(this);
+      }
+    }, {
+      key: "render",
+      value: function render() {
+        var renderedElement = _get(_getPrototypeOf(RadiumEnhancer.prototype), "render", this).call(this);
+
+        var currentConfig = this.props.radiumConfig || this.props.radiumConfigContext || config;
+
+        if (config && currentConfig !== config) {
+          currentConfig = _objectSpread({}, config, currentConfig);
+        } // do the style and interaction work
+
+
+        var _resolveStyles2 = resolveStyles(this, renderedElement, currentConfig),
+            extraStateKeyMap = _resolveStyles2.extraStateKeyMap,
+            element = _resolveStyles2.element;
+
+        this._extraRadiumStateKeys = Object.keys(extraStateKeyMap);
+
+        if (this.props.radiumConfig) {
+          return React.createElement(RadiumConfigContext.Provider, {
+            value: this.props.radiumConfig
+          }, element);
+        }
+
+        return element;
+      }
     }]);
 
     return RadiumEnhancer;
-  }(ComposedComponent), _class._isRadiumEnhanced = true, _temp);
+  }(ComposedComponent); // Lazy infer the method names of the Enhancer.
 
-  // Lazy infer the method names of the Enhancer.
 
+  RadiumEnhancer._isRadiumEnhanced = true;
   RADIUM_PROTO = RadiumEnhancer.prototype;
   RADIUM_METHODS = Object.getOwnPropertyNames(RADIUM_PROTO).filter(function (n) {
     return n !== 'constructor' && typeof RADIUM_PROTO[n] === 'function';
-  });
-
-  // Class inheritance uses Object.create and because of __proto__ issues
+  }); // Class inheritance uses Object.create and because of __proto__ issues
   // with IE <10 any static properties of the superclass aren't inherited and
   // so need to be manually populated.
   // See http://babeljs.io/docs/advanced/caveats/#classes-10-and-below-
+
   copyProperties(origComponent, RadiumEnhancer);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -203,53 +293,18 @@ function createEnhancedComponent(origComponent, ComposedComponent, config) {
     // level prototype methods on the Radium enhanced prototype as discussed in
     // https://github.com/FormidableLabs/radium/issues/219.
     copyProperties(ComposedComponent.prototype, RadiumEnhancer.prototype);
-  }
+  } // add Radium propTypes to enhanced component's propTypes
 
-  // add Radium propTypes to enhanced component's propTypes
+
   if (RadiumEnhancer.propTypes && RadiumEnhancer.propTypes.style) {
-    RadiumEnhancer.propTypes = _extends({}, RadiumEnhancer.propTypes, {
+    RadiumEnhancer.propTypes = _objectSpread({}, RadiumEnhancer.propTypes, {
       style: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
     });
-  }
+  } // copy display name to enhanced component
 
-  // copy display name to enhanced component
+
   RadiumEnhancer.displayName = origComponent.displayName || origComponent.name || 'Component';
-
-  // handle context
-  RadiumEnhancer.contextTypes = _extends({}, RadiumEnhancer.contextTypes, {
-    _radiumConfig: PropTypes.object,
-    _radiumStyleKeeper: PropTypes.instanceOf(StyleKeeper)
-  });
-
-  RadiumEnhancer.childContextTypes = _extends({}, RadiumEnhancer.childContextTypes, {
-    _radiumConfig: PropTypes.object,
-    _radiumStyleKeeper: PropTypes.instanceOf(StyleKeeper)
-  });
-
-  return RadiumEnhancer;
-}
-
-function createComposedFromStatelessFunc(ComposedComponent, component) {
-  ComposedComponent = function (_Component) {
-    _inherits(ComposedComponent, _Component);
-
-    function ComposedComponent() {
-      _classCallCheck(this, ComposedComponent);
-
-      return _possibleConstructorReturn(this, (ComposedComponent.__proto__ || Object.getPrototypeOf(ComposedComponent)).apply(this, arguments));
-    }
-
-    _createClass(ComposedComponent, [{
-      key: 'render',
-      value: function render() {
-        return component(this.props, this.context);
-      }
-    }]);
-
-    return ComposedComponent;
-  }(Component);
-  ComposedComponent.displayName = component.displayName || component.name;
-  return ComposedComponent;
+  return withRadiumContexts(RadiumEnhancer);
 }
 
 function createComposedFromNativeClass(ComposedComponent) {
@@ -258,58 +313,69 @@ function createComposedFromNativeClass(ComposedComponent) {
       // Use Reflect.construct to simulate 'new'
       var obj = Reflect.construct(OrigComponent, arguments, this.constructor);
       return obj;
-    }
-    // $FlowFixMe
-    Reflect.setPrototypeOf(NewComponent.prototype, OrigComponent.prototype);
-    // $FlowFixMe
+    } // $FlowFixMe
+
+
+    Reflect.setPrototypeOf(NewComponent.prototype, OrigComponent.prototype); // $FlowFixMe
+
     Reflect.setPrototypeOf(NewComponent, OrigComponent);
     return NewComponent;
   }(ComposedComponent);
+
   return ComposedComponent;
 }
 
+var ReactForwardRefSymbol = forwardRef(function () {
+  return null;
+}).$$typeof;
 export default function enhanceWithRadium(configOrComposedComponent) {
   var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  if (ReactForwardRefSymbol && configOrComposedComponent.$$typeof === ReactForwardRefSymbol) {
+    return createEnhancedFunctionComponent(configOrComposedComponent.render, config);
+  }
 
   if (typeof configOrComposedComponent !== 'function') {
     return createFactoryFromConfig(config, configOrComposedComponent);
   }
 
-  var origComponent = configOrComposedComponent;
-  var _ComposedComponent2 = origComponent;
+  var origComponent = configOrComposedComponent; // Handle stateless components
 
-  // Radium is transpiled in npm, so it isn't really using es6 classes at
+  if (isStateless(origComponent)) {
+    return createEnhancedFunctionComponent(origComponent, config);
+  }
+
+  var _ComposedComponent2 = origComponent; // Radium is transpiled in npm, so it isn't really using es6 classes at
   // runtime.  However, the user of Radium might be.  In this case we have
   // to maintain forward compatibility with native es classes.
+
   if (isNativeClass(_ComposedComponent2)) {
     _ComposedComponent2 = createComposedFromNativeClass(_ComposedComponent2);
-  }
+  } // Shallow copy composed if still original (we may mutate later).
 
-  // Handle stateless components
-  if (isStateless(_ComposedComponent2)) {
-    _ComposedComponent2 = createComposedFromStatelessFunc(_ComposedComponent2, origComponent);
-  }
 
-  // Shallow copy composed if still original (we may mutate later).
   if (_ComposedComponent2 === origComponent) {
-    _ComposedComponent2 = function (_ComposedComponent3) {
+    _ComposedComponent2 =
+    /*#__PURE__*/
+    function (_ComposedComponent3) {
       _inherits(ComposedComponent, _ComposedComponent3);
 
       function ComposedComponent() {
         _classCallCheck(this, ComposedComponent);
 
-        return _possibleConstructorReturn(this, (ComposedComponent.__proto__ || Object.getPrototypeOf(ComposedComponent)).apply(this, arguments));
+        return _possibleConstructorReturn(this, _getPrototypeOf(ComposedComponent).apply(this, arguments));
       }
 
       return ComposedComponent;
     }(_ComposedComponent2);
   }
 
-  return createEnhancedComponent(origComponent, _ComposedComponent2, config);
+  return createEnhancedClassComponent(origComponent, _ComposedComponent2, config);
 }
 
 function createFactoryFromConfig(config, configOrComposedComponent) {
-  var newConfig = _extends({}, config, configOrComposedComponent);
+  var newConfig = _objectSpread({}, config, configOrComposedComponent);
+
   return function (configOrComponent) {
     return enhanceWithRadium(configOrComponent, newConfig);
   };

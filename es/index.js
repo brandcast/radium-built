@@ -8,14 +8,14 @@ import resolveStyles from './resolve-styles';
 
 function Radium(ComposedComponent) {
   return Enhancer(ComposedComponent);
-}
-
-// Legacy object support.
+} // Legacy object support.
 //
 // Normally it would be disfavored to attach these to the `Radium` object
 // because it defeats tree-shaking, using instead the ESM exports. But,
 // the `Radium` `Enhancer` uses **all** of these, so there's no extra "cost"
 // to them being explicitly on the `Radium` object.
+
+
 Radium.Plugins = Plugins;
 Radium.Style = Style;
 Radium.StyleRoot = StyleRoot;
@@ -30,7 +30,6 @@ if (process.env.NODE_ENV !== 'production') {
   };
 }
 
-export default Radium;
+export default Radium; // ESM re-exports
 
-// ESM re-exports
 export { Plugins, Style, StyleRoot, getState, keyframes };

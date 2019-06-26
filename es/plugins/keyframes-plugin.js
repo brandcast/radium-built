@@ -1,5 +1,4 @@
-export default function keyframesPlugin(_ref // eslint-disable-line no-shadow
-) {
+export default function keyframesPlugin(_ref) {
   var addCSS = _ref.addCSS,
       config = _ref.config,
       style = _ref.style;
@@ -30,5 +29,7 @@ export default function keyframesPlugin(_ref // eslint-disable-line no-shadow
     newStyleInProgress[key] = value;
     return newStyleInProgress;
   }, {});
-  return { style: newStyle };
+  return {
+    style: newStyle
+  };
 }

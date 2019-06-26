@@ -20,6 +20,7 @@ var subscribe = function subscribe(callback) {
   return {
     remove: function remove() {
       var index = _callbacks.indexOf(callback);
+
       _callbacks.splice(index, 1);
 
       if (_callbacks.length === 0 && _mouseUpListenerIsActive) {

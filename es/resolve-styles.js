@@ -1,9 +1,10 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 import appendImportantToEachValue from './append-important-to-each-value';
-
 import cssRuleSetToString from './css-rule-set-to-string';
 import getState from './get-state';
 import getStateKey from './get-state-key';
@@ -12,17 +13,16 @@ import getRadiumStyleState from './get-radium-style-state';
 import hash from './hash';
 import { isNestedStyle, mergeStyles } from './merge-styles';
 import Plugins from './plugins/';
-
 import ExecutionEnvironment from 'exenv';
 import React from 'react';
-
+import StyleKeeper from './style-keeper';
 var DEFAULT_CONFIG = {
   plugins: [Plugins.mergeStyleArray, Plugins.checkProps, Plugins.resolveMediaQueries, Plugins.resolveInteractionStyles, Plugins.keyframes, Plugins.visited, Plugins.removeNestedStyles, Plugins.prefix, Plugins.checkProps]
-};
+}; // Gross
 
-// Gross
-var globalState = {};
+var globalState = {}; // Only for use by tests
 
+var __isTestModeEnabled = false;
 // Declare early for recursive helpers.
 var _resolveStyles5 = null;
 
@@ -41,7 +41,7 @@ var _resolveChildren = function _resolveChildren(_ref) {
     return children;
   }
 
-  var childrenType = typeof children === 'undefined' ? 'undefined' : _typeof(children);
+  var childrenType = _typeof(children);
 
   if (childrenType === 'string' || childrenType === 'number') {
     // Don't do anything with a single primitive child
@@ -55,12 +55,13 @@ var _resolveChildren = function _resolveChildren(_ref) {
 
       if (React.isValidElement(result)) {
         var _key = getStateKey(result);
+
         delete extraStateKeyMap[_key];
 
         var _resolveStyles = _resolveStyles5(component, result, config, existingKeyMap, true, extraStateKeyMap),
-            _element = _resolveStyles.element;
+            element = _resolveStyles.element;
 
-        return _element;
+        return element;
       }
 
       return result;
@@ -71,40 +72,41 @@ var _resolveChildren = function _resolveChildren(_ref) {
     // If a React Element is an only child, don't wrap it in an array for
     // React.Children.map() for React.Children.only() compatibility.
     var onlyChild = React.Children.only(children);
+
     var _key2 = getStateKey(onlyChild);
+
     delete extraStateKeyMap[_key2];
 
     var _resolveStyles2 = _resolveStyles5(component, onlyChild, config, existingKeyMap, true, extraStateKeyMap),
-        _element2 = _resolveStyles2.element;
+        element = _resolveStyles2.element;
 
-    return _element2;
+    return element;
   }
 
   return React.Children.map(children, function (child) {
     if (React.isValidElement(child)) {
       var _key3 = getStateKey(child);
+
       delete extraStateKeyMap[_key3];
 
       var _resolveStyles3 = _resolveStyles5(component, child, config, existingKeyMap, true, extraStateKeyMap),
-          _element3 = _resolveStyles3.element;
+          _element = _resolveStyles3.element;
 
-      return _element3;
+      return _element;
     }
 
     return child;
   });
-};
+}; // Recurse over props, just like children
 
-// Recurse over props, just like children
+
 var _resolveProps = function _resolveProps(_ref2) {
   var component = _ref2.component,
       config = _ref2.config,
       existingKeyMap = _ref2.existingKeyMap,
       props = _ref2.props,
       extraStateKeyMap = _ref2.extraStateKeyMap;
-
   var newProps = props;
-
   Object.keys(props).forEach(function (prop) {
     // We already recurse over children above
     if (prop === 'children') {
@@ -112,18 +114,19 @@ var _resolveProps = function _resolveProps(_ref2) {
     }
 
     var propValue = props[prop];
+
     if (React.isValidElement(propValue)) {
       var _key4 = getStateKey(propValue);
+
       delete extraStateKeyMap[_key4];
-      newProps = _extends({}, newProps);
+      newProps = _objectSpread({}, newProps);
 
       var _resolveStyles4 = _resolveStyles5(component, propValue, config, existingKeyMap, true, extraStateKeyMap),
-          _element4 = _resolveStyles4.element;
+          element = _resolveStyles4.element;
 
-      newProps[prop] = _element4;
+      newProps[prop] = element;
     }
   });
-
   return newProps;
 };
 
@@ -131,14 +134,13 @@ var _buildGetKey = function _buildGetKey(_ref3) {
   var componentName = _ref3.componentName,
       existingKeyMap = _ref3.existingKeyMap,
       renderedElement = _ref3.renderedElement;
-
   // We need a unique key to correlate state changes due to user interaction
   // with the rendered element, so we know to apply the proper interactive
   // styles.
   var originalKey = getStateKey(renderedElement);
   var key = cleanStateKey(originalKey);
-
   var alreadyGotKey = false;
+
   var getKey = function getKey() {
     if (alreadyGotKey) {
       return key;
@@ -147,7 +149,8 @@ var _buildGetKey = function _buildGetKey(_ref3) {
     alreadyGotKey = true;
 
     if (existingKeyMap[key]) {
-      var elementName = void 0;
+      var elementName;
+
       if (typeof renderedElement.type === 'string') {
         elementName = renderedElement.type;
       } else if (renderedElement.type.constructor) {
@@ -158,7 +161,6 @@ var _buildGetKey = function _buildGetKey(_ref3) {
     }
 
     existingKeyMap[key] = true;
-
     return key;
   };
 
@@ -171,11 +173,11 @@ var _setStyleState = function _setStyleState(component, key, stateKey, value) {
   }
 
   var existing = getRadiumStyleState(component);
-  var state = { _radiumStyleState: _extends({}, existing) };
-
-  state._radiumStyleState[key] = _extends({}, state._radiumStyleState[key]);
+  var state = {
+    _radiumStyleState: _objectSpread({}, existing)
+  };
+  state._radiumStyleState[key] = _objectSpread({}, state._radiumStyleState[key]);
   state._radiumStyleState[key][stateKey] = value;
-
   component._lastRadiumState = state._radiumStyleState;
   component.setState(state);
 };
@@ -194,30 +196,34 @@ var _runPlugins = function _runPlugins(_ref4) {
   }
 
   var newProps = props;
-
   var plugins = config.plugins || DEFAULT_CONFIG.plugins;
-
   var componentName = component.constructor.displayName || component.constructor.name;
+
   var getKey = _buildGetKey({
     renderedElement: renderedElement,
     existingKeyMap: existingKeyMap,
     componentName: componentName
   });
+
   var getComponentField = function getComponentField(key) {
     return component[key];
   };
+
   var getGlobalState = function getGlobalState(key) {
     return globalState[key];
   };
+
   var componentGetState = function componentGetState(stateKey, elementKey) {
     return getState(component.state, elementKey || getKey(), stateKey);
   };
+
   var setState = function setState(stateKey, value, elementKey) {
     return _setStyleState(component, elementKey || getKey(), stateKey, value);
   };
 
   var addCSS = function addCSS(css) {
-    var styleKeeper = component._radiumStyleKeeper || component.context._radiumStyleKeeper;
+    var styleKeeper = component._radiumStyleKeeper;
+
     if (!styleKeeper) {
       if (__isTestModeEnabled) {
         return {
@@ -232,7 +238,6 @@ var _runPlugins = function _runPlugins(_ref4) {
   };
 
   var newStyle = props.style;
-
   plugins.forEach(function (plugin) {
     var result = plugin({
       ExecutionEnvironment: ExecutionEnvironment,
@@ -251,16 +256,12 @@ var _runPlugins = function _runPlugins(_ref4) {
       isNestedStyle: isNestedStyle,
       style: newStyle
     }) || {};
-
     newStyle = result.style || newStyle;
-
-    newProps = result.props && Object.keys(result.props).length ? _extends({}, newProps, result.props) : newProps;
-
+    newProps = result.props && Object.keys(result.props).length ? _objectSpread({}, newProps, result.props) : newProps;
     var newComponentFields = result.componentFields || {};
     Object.keys(newComponentFields).forEach(function (fieldName) {
       component[fieldName] = newComponentFields[fieldName];
     });
-
     var newGlobalState = result.globalState || {};
     Object.keys(newGlobalState).forEach(function (key) {
       globalState[key] = newGlobalState[key];
@@ -268,38 +269,42 @@ var _runPlugins = function _runPlugins(_ref4) {
   });
 
   if (newStyle !== props.style) {
-    newProps = _extends({}, newProps, { style: newStyle });
+    newProps = _objectSpread({}, newProps, {
+      style: newStyle
+    });
   }
 
   return newProps;
-};
-
-// Wrapper around React.cloneElement. To avoid processing the same element
+}; // Wrapper around React.cloneElement. To avoid processing the same element
 // twice, whenever we clone an element add a special prop to make sure we don't
 // process this element again.
+
+
 var _cloneElement = function _cloneElement(renderedElement, newProps, newChildren) {
   // Only add flag if this is a normal DOM element
   if (typeof renderedElement.type === 'string') {
-    newProps = _extends({}, newProps, { 'data-radium': true });
+    newProps = _objectSpread({}, newProps, {
+      'data-radium': true
+    });
   }
 
   return React.cloneElement(renderedElement, newProps, newChildren);
-};
-
-//
+}; //
 // The nucleus of Radium. resolveStyles is called on the rendered elements
 // before they are returned in render. It iterates over the elements and
 // children, rewriting props to add event handlers required to capture user
 // interactions (e.g. mouse over). It also replaces the style prop because it
 // adds in the various interaction styles (e.g. :hover).
 //
+
 /* eslint-disable max-params */
-_resolveStyles5 = function resolveStyles(component, // ReactComponent, flow+eslint complaining
-renderedElement) {
+
+
+_resolveStyles5 = function resolveStyles(component, renderedElement) {
   var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DEFAULT_CONFIG;
   var existingKeyMap = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   var shouldCheckBeforeResolve = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-  var extraStateKeyMap = arguments[5];
+  var extraStateKeyMap = arguments.length > 5 ? arguments[5] : undefined;
 
   // The extraStateKeyMap is for determining which keys should be erased from
   // the state (i.e. which child components are unmounted and should no longer
@@ -314,6 +319,7 @@ renderedElement) {
       if (key !== 'main') {
         acc[key] = true;
       }
+
       return acc;
     }, {});
   }
@@ -323,30 +329,32 @@ renderedElement) {
       // element is in-use, so remove from the extraStateKeyMap
       if (extraStateKeyMap) {
         var _key5 = getStateKey(element);
-        delete extraStateKeyMap[_key5];
-      }
 
-      // this element is an array of elements,
+        delete extraStateKeyMap[_key5];
+      } // this element is an array of elements,
       // so return an array of elements with resolved styles
+
+
       return _resolveStyles5(component, element, config, existingKeyMap, shouldCheckBeforeResolve, extraStateKeyMap).element;
     });
     return {
       extraStateKeyMap: extraStateKeyMap,
       element: elements
     };
-  }
+  } // ReactElement
 
-  // ReactElement
-  if (!renderedElement ||
-  // Bail if we've already processed this element. This ensures that only the
+
+  if (!renderedElement || // Bail if we've already processed this element. This ensures that only the
   // owner of an element processes that element, since the owner's render
   // function will be called first (which will always be the case, since you
   // can't know what else to render until you render the parent component).
-  renderedElement.props && renderedElement.props['data-radium'] ||
-  // Bail if this element is a radium enhanced element, because if it is,
+  renderedElement.props && renderedElement.props['data-radium'] || // Bail if this element is a radium enhanced element, because if it is,
   // then it will take care of resolving its own styles.
   shouldCheckBeforeResolve && !_shouldResolveStyles(renderedElement)) {
-    return { extraStateKeyMap: extraStateKeyMap, element: renderedElement };
+    return {
+      extraStateKeyMap: extraStateKeyMap,
+      element: renderedElement
+    };
   }
 
   var children = renderedElement.props.children;
@@ -373,27 +381,33 @@ renderedElement) {
     existingKeyMap: existingKeyMap,
     props: newProps,
     renderedElement: renderedElement
-  });
-
-  // If nothing changed, don't bother cloning the element. Might be a bit
+  }); // If nothing changed, don't bother cloning the element. Might be a bit
   // wasteful, as we add the sentinel to stop double-processing when we clone.
   // Assume benign double-processing is better than unneeded cloning.
+
   if (newChildren === children && newProps === renderedElement.props) {
-    return { extraStateKeyMap: extraStateKeyMap, element: renderedElement };
+    return {
+      extraStateKeyMap: extraStateKeyMap,
+      element: renderedElement
+    };
   }
 
   var element = _cloneElement(renderedElement, newProps !== renderedElement.props ? newProps : {}, newChildren);
 
-  return { extraStateKeyMap: extraStateKeyMap, element: element };
+  return {
+    extraStateKeyMap: extraStateKeyMap,
+    element: element
+  };
 };
 /* eslint-enable max-params */
-
 // Only for use by tests
-var __isTestModeEnabled = false;
+
+
 if (process.env.NODE_ENV !== 'production') {
   _resolveStyles5.__clearStateForTests = function () {
     globalState = {};
   };
+
   _resolveStyles5.__setTestMode = function (isEnabled) {
     __isTestModeEnabled = isEnabled;
   };

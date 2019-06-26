@@ -1,6 +1,8 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var _checkProps = function checkProps() {};
 
@@ -8,7 +10,6 @@ if (process.env.NODE_ENV !== 'production') {
   // Warn if you use longhand and shorthand properties in the same style
   // object.
   // https://developer.mozilla.org/en-US/docs/Web/CSS/Shorthand_properties
-
   var shorthandPropertyExpansions = {
     background: ['backgroundAttachment', 'backgroundBlendMode', 'backgroundClip', 'backgroundColor', 'backgroundImage', 'backgroundOrigin', 'backgroundPosition', 'backgroundPositionX', 'backgroundPositionY', 'backgroundRepeat', 'backgroundRepeatX', 'backgroundRepeatY', 'backgroundSize'],
     border: ['borderBottom', 'borderBottomColor', 'borderBottomStyle', 'borderBottomWidth', 'borderColor', 'borderLeft', 'borderLeftColor', 'borderLeftStyle', 'borderLeftWidth', 'borderRight', 'borderRightColor', 'borderRightStyle', 'borderRightWidth', 'borderStyle', 'borderTop', 'borderTopColor', 'borderTopStyle', 'borderTopWidth', 'borderWidth'],
@@ -25,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
     var componentName = config.componentName,
         style = config.style;
 
-    if ((typeof style === 'undefined' ? 'undefined' : _typeof(style)) !== 'object' || !style) {
+    if (_typeof(style) !== 'object' || !style) {
       return;
     }
 
@@ -41,9 +42,10 @@ if (process.env.NODE_ENV !== 'production') {
         }
       }
     });
-
     styleKeys.forEach(function (k) {
-      return _checkProps(_extends({}, config, { style: style[k] }));
+      return _checkProps(_objectSpread({}, config, {
+        style: style[k]
+      }));
     });
     return;
   };

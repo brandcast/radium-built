@@ -10,7 +10,6 @@ import imageSet from 'inline-style-prefixer/dynamic/plugins/imageSet';
 import position from 'inline-style-prefixer/dynamic/plugins/position';
 import sizing from 'inline-style-prefixer/dynamic/plugins/sizing';
 import transition from 'inline-style-prefixer/dynamic/plugins/transition';
-
 export default {
   plugins: [calc, crossFade, cursor, filter, flex, flexboxIE, flexboxOld, gradient, imageSet, position, sizing, transition],
   prefixMap: {

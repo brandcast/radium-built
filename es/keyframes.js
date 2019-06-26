@@ -1,7 +1,6 @@
 import cssRuleSetToString from './css-rule-set-to-string';
 import hash from './hash';
 import { getPrefixedKeyframes } from './prefixer';
-
 export default function keyframes(keyframeRules, name) {
   return {
     __radiumKeyframes: true,
@@ -12,7 +11,10 @@ export default function keyframes(keyframeRules, name) {
       }).join('\n');
       var animationName = (name ? name + '-' : '') + 'radium-animation-' + hash(rules);
       var css = '@' + keyframesPrefixed + ' ' + animationName + ' {\n' + rules + '\n}\n';
-      return { css: css, animationName: animationName };
+      return {
+        css: css,
+        animationName: animationName
+      };
     }
   };
 }

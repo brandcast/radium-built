@@ -1,12 +1,16 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-var _windowMatchMedia = void 0;
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var _windowMatchMedia;
+
 function _getWindowMatchMedia(ExecutionEnvironment) {
   if (_windowMatchMedia === undefined) {
     _windowMatchMedia = !!ExecutionEnvironment.canUseDOM && !!window && !!window.matchMedia && function (mediaQueryString) {
       return window.matchMedia(mediaQueryString);
     } || null;
   }
+
   return _windowMatchMedia;
 }
 
@@ -24,6 +28,7 @@ function _removeMediaQueries(style) {
     if (key.indexOf('@media') !== 0) {
       styleWithoutMedia[key] = style[key];
     }
+
     return styleWithoutMedia;
   }, {});
 }
@@ -36,7 +41,6 @@ function _topLevelRulesToCSS(_ref) {
       isNestedStyle = _ref.isNestedStyle,
       style = _ref.style,
       userAgent = _ref.userAgent;
-
   var className = '';
   Object.keys(style).filter(function (name) {
     return name.indexOf('@media') === 0;
@@ -49,14 +53,11 @@ function _topLevelRulesToCSS(_ref) {
       return;
     }
 
-    var ruleCSS = cssRuleSetToString('', topLevelRules, userAgent);
+    var ruleCSS = cssRuleSetToString('', topLevelRules, userAgent); // CSS classes cannot start with a number
 
-    // CSS classes cannot start with a number
     var mediaQueryClassName = 'rmq-' + hash(query + ruleCSS);
     var css = query + '{ .' + mediaQueryClassName + ruleCSS + '}';
-
     addCSS(css);
-
     className += (className ? ' ' : '') + mediaQueryClassName;
   });
   return className;
@@ -68,23 +69,22 @@ function _subscribeToMediaQuery(_ref2) {
       matchMedia = _ref2.matchMedia,
       mediaQueryListsByQuery = _ref2.mediaQueryListsByQuery,
       query = _ref2.query;
-
   query = query.replace('@media ', '');
-
   var mql = mediaQueryListsByQuery[query];
+
   if (!mql && matchMedia) {
     mediaQueryListsByQuery[query] = mql = matchMedia(query);
   }
 
   if (!listenersByQuery || !listenersByQuery[query]) {
     mql.addListener(listener);
-
     listenersByQuery[query] = {
       remove: function remove() {
         mql.removeListener(listener);
       }
     };
   }
+
   return mql;
 }
 
@@ -105,6 +105,7 @@ export default function resolveMediaQueries(_ref3) {
 
   // eslint-disable-line no-shadow
   var newStyle = _removeMediaQueries(style);
+
   var mediaQueryClassNames = _topLevelRulesToCSS({
     addCSS: addCSS,
     appendImportantToEachValue: appendImportantToEachValue,
@@ -128,9 +129,9 @@ export default function resolveMediaQueries(_ref3) {
     };
   }
 
-  var listenersByQuery = _extends({}, getComponentField('_radiumMediaQueryListenersByQuery'));
-  var mediaQueryListsByQuery = getGlobalState('mediaQueryListsByQuery') || {};
+  var listenersByQuery = _objectSpread({}, getComponentField('_radiumMediaQueryListenersByQuery'));
 
+  var mediaQueryListsByQuery = getGlobalState('mediaQueryListsByQuery') || {};
   Object.keys(style).filter(function (name) {
     return name.indexOf('@media') === 0;
   }).map(function (query) {
@@ -148,19 +149,20 @@ export default function resolveMediaQueries(_ref3) {
       matchMedia: matchMedia,
       mediaQueryListsByQuery: mediaQueryListsByQuery,
       query: query
-    });
+    }); // Apply media query states
 
-    // Apply media query states
+
     if (mql.matches) {
       newStyle = mergeStyles([newStyle, nestedRules]);
     }
   });
-
   return {
     componentFields: {
       _radiumMediaQueryListenersByQuery: listenersByQuery
     },
-    globalState: { mediaQueryListsByQuery: mediaQueryListsByQuery },
+    globalState: {
+      mediaQueryListsByQuery: mediaQueryListsByQuery
+    },
     props: newProps,
     style: newStyle
   };

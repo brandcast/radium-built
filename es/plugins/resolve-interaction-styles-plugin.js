@@ -1,5 +1,3 @@
-
-
 import MouseUpListener from './mouse-up-listener';
 
 var _isInteractiveStyleField = function _isInteractiveStyleField(styleFieldName) {
@@ -14,23 +12,22 @@ var resolveInteractionStyles = function resolveInteractionStyles(config) {
       props = config.props,
       setState = config.setState,
       style = config.style;
-
-
   var newComponentFields = {};
-  var newProps = {};
+  var newProps = {}; // Only add handlers if necessary
 
-  // Only add handlers if necessary
   if (style[':hover']) {
     // Always call the existing handler if one is already defined.
     // This code, and the very similar ones below, could be abstracted a bit
     // more, but it hurts readability IMO.
     var existingOnMouseEnter = props.onMouseEnter;
+
     newProps.onMouseEnter = function (e) {
       existingOnMouseEnter && existingOnMouseEnter(e);
       setState(':hover', true);
     };
 
     var existingOnMouseLeave = props.onMouseLeave;
+
     newProps.onMouseLeave = function (e) {
       existingOnMouseLeave && existingOnMouseLeave(e);
       setState(':hover', false);
@@ -39,6 +36,7 @@ var resolveInteractionStyles = function resolveInteractionStyles(config) {
 
   if (style[':active']) {
     var existingOnMouseDown = props.onMouseDown;
+
     newProps.onMouseDown = function (e) {
       existingOnMouseDown && existingOnMouseDown(e);
       newComponentFields._lastMouseDown = Date.now();
@@ -46,16 +44,20 @@ var resolveInteractionStyles = function resolveInteractionStyles(config) {
     };
 
     var existingOnKeyDown = props.onKeyDown;
+
     newProps.onKeyDown = function (e) {
       existingOnKeyDown && existingOnKeyDown(e);
+
       if (e.key === ' ' || e.key === 'Enter') {
         setState(':active', 'viakeydown');
       }
     };
 
     var existingOnKeyUp = props.onKeyUp;
+
     newProps.onKeyUp = function (e) {
       existingOnKeyUp && existingOnKeyUp(e);
+
       if (e.key === ' ' || e.key === 'Enter') {
         setState(':active', false);
       }
@@ -64,12 +66,14 @@ var resolveInteractionStyles = function resolveInteractionStyles(config) {
 
   if (style[':focus']) {
     var existingOnFocus = props.onFocus;
+
     newProps.onFocus = function (e) {
       existingOnFocus && existingOnFocus(e);
       setState(':focus', true);
     };
 
     var existingOnBlur = props.onBlur;
+
     newProps.onBlur = function (e) {
       existingOnBlur && existingOnBlur(e);
       setState(':focus', false);
@@ -84,25 +88,23 @@ var resolveInteractionStyles = function resolveInteractionStyles(config) {
         }
       });
     });
-  }
+  } // Merge the styles in the order they were defined
 
-  // Merge the styles in the order they were defined
+
   var interactionStyles = props.disabled ? [style[':disabled']] : Object.keys(style).filter(function (name) {
     return _isInteractiveStyleField(name) && getState(name);
   }).map(function (name) {
     return style[name];
   });
+  var newStyle = mergeStyles([style].concat(interactionStyles)); // Remove interactive styles
 
-  var newStyle = mergeStyles([style].concat(interactionStyles));
-
-  // Remove interactive styles
   newStyle = Object.keys(newStyle).reduce(function (styleWithoutInteractions, name) {
     if (!_isInteractiveStyleField(name) && name !== ':disabled') {
       styleWithoutInteractions[name] = newStyle[name];
     }
+
     return styleWithoutInteractions;
   }, {});
-
   return {
     componentFields: newComponentFields,
     props: newProps,

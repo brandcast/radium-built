@@ -1,79 +1,36 @@
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-import React, { PureComponent } from 'react';
-
-import PropTypes from 'prop-types';
-
+import React, { useContext, useRef } from 'react';
 import Enhancer from '../enhancer';
 import StyleKeeper from '../style-keeper';
 import StyleSheet from './style-sheet';
+import { StyleKeeperContext, RadiumConfigContext } from '../context';
 
-
-function _getStyleKeeper(instance) {
-  if (!instance._radiumStyleKeeper) {
-    var userAgent = instance.props.radiumConfig && instance.props.radiumConfig.userAgent || instance.context._radiumConfig && instance.context._radiumConfig.userAgent;
-    instance._radiumStyleKeeper = new StyleKeeper(userAgent);
-  }
-
-  return instance._radiumStyleKeeper;
+function getStyleKeeper(configProp, configContext) {
+  var userAgent = configProp && configProp.userAgent || configContext && configContext.userAgent;
+  return new StyleKeeper(userAgent);
 }
 
-var StyleRoot = function (_PureComponent) {
-  _inherits(StyleRoot, _PureComponent);
+var StyleRootInner = Enhancer(function (_ref) {
+  var children = _ref.children,
+      otherProps = _objectWithoutProperties(_ref, ["children"]);
 
-  function StyleRoot() {
-    _classCallCheck(this, StyleRoot);
+  return React.createElement("div", otherProps, children, React.createElement(StyleSheet, null));
+});
 
-    var _this = _possibleConstructorReturn(this, (StyleRoot.__proto__ || Object.getPrototypeOf(StyleRoot)).apply(this, arguments));
+var StyleRoot = function StyleRoot(props) {
+  /* eslint-disable no-unused-vars */
+  // Pass down all props except config to the rendered div.
 
-    _getStyleKeeper(_this);
-    return _this;
-  }
-
-  _createClass(StyleRoot, [{
-    key: 'getChildContext',
-    value: function getChildContext() {
-      return { _radiumStyleKeeper: _getStyleKeeper(this) };
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      /* eslint-disable no-unused-vars */
-      // Pass down all props except config to the rendered div.
-      var _props = this.props,
-          radiumConfig = _props.radiumConfig,
-          otherProps = _objectWithoutProperties(_props, ['radiumConfig']);
-      /* eslint-enable no-unused-vars */
-
-      return React.createElement(
-        'div',
-        otherProps,
-        this.props.children,
-        React.createElement(StyleSheet, null)
-      );
-    }
-  }]);
-
-  return StyleRoot;
-}(PureComponent);
-
-StyleRoot.contextTypes = {
-  _radiumConfig: PropTypes.object,
-  _radiumStyleKeeper: PropTypes.instanceOf(StyleKeeper)
+  /* eslint-enable no-unused-vars */
+  var radiumConfig = props.radiumConfig;
+  var configContext = useContext(RadiumConfigContext);
+  var styleKeeper = useRef(getStyleKeeper(radiumConfig, configContext));
+  return React.createElement(StyleKeeperContext.Provider, {
+    value: styleKeeper.current
+  }, React.createElement(StyleRootInner, props));
 };
-
-StyleRoot.childContextTypes = {
-  _radiumStyleKeeper: PropTypes.instanceOf(StyleKeeper)
-};
-
-StyleRoot = Enhancer(StyleRoot);
 
 export default StyleRoot;
